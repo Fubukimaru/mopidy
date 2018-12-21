@@ -83,7 +83,7 @@ def load_items(fp, basedir):
     for line in filter(None, (line.strip() for line in fp)):
         if line.startswith('#'):
             if line.startswith('#EXTINF:'):
-                name = line.partition(',')[2]
+                name = line.partition(':')[2]
             continue
         elif not urlsplit(line).scheme:
             path = os.path.join(basedir, fsencode(line))
@@ -109,6 +109,25 @@ def dump_items(items, fp):
         else:
             print(item.uri, file=fp)
 
+def M3UToTrack(item):
+    if item is not None:
+        print("ITEEEEEEEEEEM")
+        print(item)
+        info=item.name.partition(',')
+        duration=int(info[0])*1000
+        artTitle = info[2].partition('-')
+        if (artTitle[2] != ''):
+            name=artTitle[2]
+            artists=[models.Artist(name=artTitle[0])]
+        else:
+            name=artTitle[0]
+            artists=None
+
+        return(
+                #models.Track(uri=item.uri, name=info[2], artists=artists, length=duration)
+                models.Track(uri=item.uri, name=name, artists=artists, length=duration)
+              )
+    return None
 
 def playlist(path, items=None, mtime=None):
     if items is None:
@@ -116,6 +135,7 @@ def playlist(path, items=None, mtime=None):
     return models.Playlist(
         uri=path_to_uri(path),
         name=name_from_path(path),
-        tracks=[models.Track(uri=item.uri, name=item.name) for item in items],
+        #tracks=[models.Track(uri=item.uri, name=item.name) for item in items],
+        tracks=[M3UToTrack(item) for item in items],
         last_modified=(int(mtime * 1000) if mtime else None)
     )
