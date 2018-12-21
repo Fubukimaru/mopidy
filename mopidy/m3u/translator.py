@@ -111,8 +111,6 @@ def dump_items(items, fp):
 
 def M3UToTrack(item):
     if item is not None:
-        print("ITEEEEEEEEEEM")
-        print(item)
         info=item.name.partition(',')
         duration=int(info[0])*1000
         artTitle = info[2].partition('-')
@@ -123,10 +121,7 @@ def M3UToTrack(item):
             name=artTitle[0]
             artists=None
 
-        return(
-                #models.Track(uri=item.uri, name=info[2], artists=artists, length=duration)
-                models.Track(uri=item.uri, name=name, artists=artists, length=duration)
-              )
+        return(models.Track(uri=item.uri, name=name, artists=artists, length=duration))
     return None
 
 def playlist(path, items=None, mtime=None):
